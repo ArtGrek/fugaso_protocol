@@ -1,0 +1,7 @@
+/target
+/packets_result/china_festival/*
+!/packets_result/china_festival/.gitkeep
+/packets_result/three_aztec_temples/*
+!/packets_result/three_aztec_temples/.gitkeep
+/packets_result/thor_hit_the_bonus/*
+!/packets_result/thor_hit_the_bonus/.gitkeep

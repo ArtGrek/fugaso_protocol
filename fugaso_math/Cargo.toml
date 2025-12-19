@@ -1,0 +1,12 @@
+[package]
+name = "fugaso_math"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+sea-orm = { workspace = true }
+essential_core = { path = "../essential_core" }
+essential_async = { path = "../essential_async" }
+fugaso_data = { path = "../fugaso_data" }

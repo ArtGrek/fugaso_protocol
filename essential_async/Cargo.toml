@@ -1,0 +1,9 @@
+[package]
+name = "essential_async"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { workspace = true }
+log = { workspace = true }
+async-trait = { workspace = true }

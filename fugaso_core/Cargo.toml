@@ -1,0 +1,25 @@
+[package]
+name = "fugaso_core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+num-traits.workspace = true
+log = { workspace = true }
+uuid = { workspace = true }
+maplit = { workspace = true }
+server = { path = "../server" }
+china_festival = { path = "../china_festival" }
+essential_core = { path = "../essential_core" }
+essential_async = { path = "../essential_async" }
+fugaso_math = { path = "../fugaso_math" }
+fugaso_data = { path = "../fugaso_data" } 
+chrono = "0.4.39"
+rust_decimal = { version = "1.36.0", features = ["serde-with-float"] }
+sea-orm = { version = "0.11.3", features = [ "sqlx-postgres", "runtime-tokio-rustls", "macros" ] }
+tokio = { workspace = true }
+
+strum_macros = "0.24"
+serde_path_to_error = "0.1"

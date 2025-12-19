@@ -1,0 +1,41 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "cargo",
+			"command": "test",
+			"args": [
+				"--package",
+				"fugaso_core",
+				"--test",
+				"hold_and_win_link_test",
+				"--",
+				"test_convert",
+				"--nocapture"
+			],
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build",
+			"label": "rust: convert"
+		},
+		{
+			"type": "cargo",
+			"command": "test",
+			"args": [
+				"--package",
+				"fugaso_core",
+				"--test",
+				"hold_and_win_link_test",
+				"--",
+				"test_config",
+				"--nocapture"
+			],
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build",
+			"label": "rust: config"
+		},
+	]
+}
