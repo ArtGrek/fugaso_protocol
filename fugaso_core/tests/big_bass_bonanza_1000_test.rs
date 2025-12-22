@@ -13,7 +13,7 @@ use fugaso_data::{fugaso_action::ActionKind, fugaso_round::RoundDetail};
 use fugaso_math::protocol::{id, Gain, GameData, GameResult, Promo, ReSpinInfo, SpinData, BasePoint, };
 use fugaso_math::protocol_big_bass_bonanza_1000::{BigBassBonanza1000Info, };
 const GAME_SOURCE_NAME: &str = "source_big_bass_bonanza_1000";
-const GAME_FUGASO_FOLDER: &str = "fugaso_big_bass_bonanza_1000";
+const GAME_FUGASO_FOLDER: &str = "bonanzalinkcashtrain1000";
 pub const BOARD_HEIGHT: usize = 3;
 pub const BOARD_WIDTH: usize = 5;
 
