@@ -117,6 +117,8 @@ fn convert(name: &str) {
 							let accum = bonus.round_win.unwrap_or_default();
 							let overlay = None;
 							let next_act = if context.actions == vec![ActionNameEnum::BonusSpinsStop] {ActionKind::COLLECT} else {ActionKind::RESPIN};
+							let mults = vec![];
+							let mults1 = vec![];
 							SpinData { 
 								id, 
 								balance, 
@@ -134,6 +136,8 @@ fn convert(name: &str) {
 										accum, 
 										stop: Default::default(), 
 										overlay, 
+										mults,
+										mults1
 									}),
 									gains, 
 									restore: Some(ReSpinInfo { 
@@ -218,24 +222,33 @@ fn convert(name: &str) {
 							let total = context.spins.total_win.unwrap_or(0);
 							let stops = vec![0, 0, 0, 0, 0];
 							let holds = vec![0];
-							let grid0 = convert_board(&context.spins.original_board.map(|original_board| {original_board.iter().map(|row| row.iter().map(|&v| v as i32).collect()).collect()}).unwrap_or(vec![]));
-							let grid = convert_board(&context.spins.board.iter().map(|row| row.iter().map(|&v| v as i32).collect()).collect());
-                            let gains = convert_win_lines(&context.spins.winlines.unwrap_or(vec![]));
-							let (next_act, respins, accum, overlay) = if context.actions == vec![ActionNameEnum::BonusInit] {
-								//special
-								let respins = 3;
-								let accum = 0;
-								let overlay = if context.spins.bac_win {Some(convert_board(&context.spins.board.iter().map(|row| row.iter().map(|&v| v as i32).collect()).collect()))} else {None};
-								let next_act = ActionKind::RESPIN;
-								(next_act, respins, accum, overlay)
+							let grid0 = vec![];
+							let (grid, overlay) = if let Some(board) = context.spins.original_board {
+								let grid = convert_board(&board.iter().map(|row| row.iter().map(|&v| v as i32).collect()).collect());
+								let overlay = Some(convert_board(&context.spins.board.iter().map(|row| row.iter().map(|&v| v as i32).collect()).collect()));
+								(grid, overlay)
 							} else {
-								//special
+								let grid = convert_board(&context.spins.board.iter().map(|row| row.iter().map(|&v| v as i32).collect()).collect());
+								let overlay = None;
+								(grid, overlay)
+							};
+                            let gains = convert_win_lines(&context.spins.winlines.unwrap_or(vec![]));
+							let (next_act, respins, accum) = if context.actions == vec![ActionNameEnum::BonusInit] {
+                                let next_grand_lightning_out = serde_json::from_value::<GrandLightningOut>(iter.peek().expect("next packet not found").response.clone()).expect("next packet not found"); 
+								let next_context = next_grand_lightning_out.context.map(|context| {context}).expect("next play context not impement");
+								let next_bonus = next_context.bonus.map(|bonus| {bonus}).expect("next play respin bonus not impement");
+								let respins = next_bonus.rounds_left as i32;
+								let accum = next_bonus.total_win;
+								let next_act = ActionKind::RESPIN;
+								(next_act, respins, accum)
+							} else {
 								let respins = 0;
 								let accum = 0;
-								let overlay = None;
 								let next_act = if context.spins.total_win.unwrap_or(0) > 0 {ActionKind::COLLECT} else {ActionKind::BET};
-								(next_act, respins, accum, overlay)
+								(next_act, respins, accum)
 							};
+							let mults = vec![];
+							let mults1 = vec![];
 							SpinData { 
 								id, 
 								balance, 
@@ -253,6 +266,8 @@ fn convert(name: &str) {
 										accum, 
 										stop: Default::default(), 
 										overlay, 
+										mults,
+										mults1
 									}),
 									gains, 
 									restore: Some(ReSpinInfo { 

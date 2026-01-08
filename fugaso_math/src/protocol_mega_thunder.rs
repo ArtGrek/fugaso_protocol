@@ -39,6 +39,10 @@ pub struct MegaThunderLinkInfo {
     pub stop: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub overlay: Option<Vec<Vec<char>>>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub mults: Vec<Vec<i32>>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub mults1: Vec<Vec<i32>>,
 }
 
 impl DatabaseStore for MegaThunderLinkInfo {
