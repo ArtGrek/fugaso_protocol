@@ -10,3 +10,4 @@ sea-orm = { workspace = true }
 essential_core = { path = "../essential_core" }
 essential_async = { path = "../essential_async" }
 fugaso_data = { path = "../fugaso_data" }
+strum_macros = "0.24"
