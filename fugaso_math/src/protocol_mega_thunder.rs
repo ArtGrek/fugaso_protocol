@@ -42,7 +42,9 @@ pub struct MegaThunderLinkInfo {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub mults: Vec<Vec<i32>>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub mults1: Vec<Vec<i32>>,
+    pub lifts: Vec<Vec<i32>>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub grand: Vec<i32>,
 }
 
 impl DatabaseStore for MegaThunderLinkInfo {
@@ -470,3 +472,30 @@ pub struct GrandLightningIn {
 	#[serde(skip_serializing_if = "Option::is_none")]
 	pub token: Option<String> /* exdemo */,
 }
+
+pub const BOARD_HEIGHT: usize = 3;
+pub const BOARD_WIDTH: usize = 5;
+pub const LINES_COUNT: usize = 25;
+pub const MINI_VALUE: i64 = 10;
+pub const MINI_STR: &str = "mini";
+pub const MINOR_VALUE: i64 = 20;
+pub const MINOR_STR: &str = "minor";
+pub const MAJOR_VALUE: i64 = 100;
+pub const MAJOR_STR: &str = "major";
+pub static JACKPOTS_VALUE: &[i64] = &[10, 20, 100];
+pub static JACKPOTS_STR: &[&str] = &["mini", "minor", "major"];
+pub const COIN: i64 = 10;
+pub const COIN_STR: &str = "10";
+pub const BOOST: i64 = 11;
+pub const BOOST_STR: &str = "11";
+pub const MULTI: i64 = 12;
+pub const MULTI_STR: &str = "12";
+pub const WILD: i64 = 9;
+pub static CHEAP_SYMBOLS: &[i64] = &[1,2,3,4];
+pub static EXPENSIVE_SYMBOLS: &[i64] = &[5,6,7,8];
+pub static SYMBOLS: &[i64] = &[1,2,3,4,5,6,7,8];
+pub static SPECIALS: &[i64] = &[11, 12, 13];
+pub static SPINS_SYMBOLS: &[i64] = &[10, 11, 12, 13];
+pub static BONUS_SYMBOLS: &[i64] = &[10, 11, 12, 13, 14];
+
+pub const SYMBOL_COIN: char = 'J';
