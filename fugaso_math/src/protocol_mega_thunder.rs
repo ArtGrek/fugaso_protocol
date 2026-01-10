@@ -5,28 +5,6 @@ use essential_core::error::ServerError;
 use essential_core::err_on;
 use crate::protocol::DatabaseStore;
 
-#[derive(Debug, Serialize, Deserialize, Default, Clone, PartialEq, Eq, Copy, Hash)]
-#[repr(u8)]
-pub enum MegaThunderKind {
-    #[default]
-    Add = 0x01,
-    Cluster = 0x02,
-    Lift = 0x04,
-
-    AddCluster = 0x03,
-    AddLift = 0x05,
-    ClusterLift = 0x06,
-
-    AddClusterLift = 0x07,
-}
-
-#[derive(Debug, Serialize, Deserialize, Default, Clone)]
-#[serde(rename_all = "camelCase")]
-pub struct ChangeItem {
-    pub p: (usize, usize),
-    pub v: i32,
-}
-
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct MegaThunderLinkInfo {

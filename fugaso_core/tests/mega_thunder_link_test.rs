@@ -54,9 +54,12 @@ fn test_structure() {
 //#[ignore]
 #[allow(unused)]
 fn test_convert() {
-    //convert("00-no_win.json");
-    //convert("01-win.json");
+    convert("00-no_win.json");
+    convert("01-win.json");
+    convert("11-s-multi_2.json");
     convert("23-fs-multi_5.json");
+    convert("24-fs-grand.json");
+    convert("25-fs-grand.json");
     convert("44fe51f0487c4118a5408a3c9c3af79b.json");
 }
 
@@ -118,14 +121,10 @@ fn convert(name: &str) {
 							let overlay = None;
 							let next_act = if context.actions == vec![ActionNameEnum::BonusSpinsStop] {ActionKind::COLLECT} else {ActionKind::RESPIN};
 							let mults = bonus.bs_values.iter().enumerate().map(|(_col_num, col)| {
-								col.iter().enumerate().map(|(_row_num, &v)| {
-									v as i32
-								}).collect::<Vec<i32>>()
+								col.iter().enumerate().map(|(_row_num, &v)| {v as i32}).collect::<Vec<i32>>()
 							}).collect::<Vec<Vec<i32>>>();
 							let lifts = bonus.bs_multi.iter().enumerate().map(|(_col_num, col)| {
-								col.iter().enumerate().map(|(_row_num, &v)| {
-									v as i32
-								}).collect::<Vec<i32>>()
+								col.iter().enumerate().map(|(_row_num, &v)| {v as i32}).collect::<Vec<i32>>()
 							}).collect::<Vec<Vec<i32>>>();
 							let grand = bonus.grand.iter().map(|&v| v as i32).collect::<Vec<i32>>();
 							SpinData { 
@@ -242,7 +241,7 @@ fn convert(name: &str) {
 								(grid, overlay)
 							};
                             let gains = convert_win_lines(&context.spins.winlines.unwrap_or(vec![]));
-							let (total, next_act, respins, accum, mults, lifts) = if context.actions == vec![ActionNameEnum::BonusInit] {
+							let (total, next_act, respins, accum, mults, lifts, grand) = if context.actions == vec![ActionNameEnum::BonusInit] {
                                 let next_grand_lightning_out = serde_json::from_value::<GrandLightningOut>(iter.peek().expect("next packet not found").response.clone()).expect("next packet not found"); 
 								let next_context = next_grand_lightning_out.context.map(|context| {context}).expect("next play context not impement");
 								let next_bonus = next_context.bonus.map(|bonus| {bonus}).expect("next play respin bonus not impement");
@@ -256,11 +255,10 @@ fn convert(name: &str) {
 									}).collect::<Vec<i32>>()
 								}).collect::<Vec<Vec<i32>>>();
 								let lifts = next_bonus.bs_multi.iter().enumerate().map(|(_col_num, col)| {
-									col.iter().enumerate().map(|(_row_num, &v)| {
-										v as i32
-									}).collect::<Vec<i32>>()
+									col.iter().enumerate().map(|(_row_num, &v)| {v as i32}).collect::<Vec<i32>>()
 								}).collect::<Vec<Vec<i32>>>();
-								(total, next_act, respins, accum, mults, lifts)
+								let grand = next_bonus.grand.iter().map(|&v| v as i32).collect::<Vec<i32>>();
+								(total, next_act, respins, accum, mults, lifts, grand)
 							} else {
 								let total = context.spins.total_win.unwrap_or(0);
 								let respins = 0;
@@ -276,9 +274,9 @@ fn convert(name: &str) {
 										if context.spins.board[col_num][row_num] == MULTI {v as i32} else {0}
 									}).collect()
 								}).collect();
-								(total, next_act, respins, accum, mults, lifts)
+								let grand = vec![];
+								(total, next_act, respins, accum, mults, lifts, grand)
 							};
-							let grand = vec![];
 							SpinData { 
 								id, 
 								balance, 
