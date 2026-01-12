@@ -501,7 +501,7 @@ impl<S: DatabaseStore + Default, R: Default> GameResult<S, R> {
 pub struct ReSpinInfo {
     #[serde(default)]
     pub total: i64,
-    pub multipliers: Vec<i32>,
+    pub mults: Vec<i32>,
     pub respins: i32,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub overlay: Option<Vec<Vec<char>>>,

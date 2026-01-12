@@ -141,14 +141,14 @@ fn convert(name: &str) {
 								gains: Default::default(), 
 								restore: Some(ReSpinInfo { 
 									total: Default::default(), 
-									multipliers: Default::default(), 
+									mults: Default::default(), 
 									respins: Default::default(), 
 									overlay: Default::default(), 
 									accum: Default::default() 
 								}), 
 								extra_data: Some(ReSpinInfo { 
 									total: Default::default(), 
-									multipliers: Default::default(), 
+									mults: Default::default(), 
 									respins: Default::default(), 
 									overlay: Default::default(), 
 									accum: Default::default() 
@@ -213,14 +213,14 @@ fn convert(name: &str) {
 								gains: Default::default(), 
 								restore: Some(ReSpinInfo { 
 									total: Default::default(), 
-									multipliers: Default::default(), 
+									mults: Default::default(), 
 									respins: Default::default(), 
 									overlay: Default::default(), 
 									accum: Default::default() 
 								}), 
 								extra_data: Some(ReSpinInfo { 
 									total: Default::default(), 
-									multipliers: Default::default(), 
+									mults: Default::default(), 
 									respins: Default::default(), 
 									overlay: Default::default(), 
 									accum: Default::default() 

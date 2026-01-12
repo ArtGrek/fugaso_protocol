@@ -10,7 +10,7 @@ mod integration;
 use integration::FuGaSoTuple;
 use fugaso_core::protocol::PlayerRequest;
 use fugaso_data::{fugaso_action::ActionKind, fugaso_round::RoundDetail};
-use fugaso_math::protocol::{GameData, SpinData, id, GameResult, Gain, ReSpinInfo, Promo, FreeGame, };
+use fugaso_math::protocol::{GameData, SpinData, id, GameResult, Gain, ReSpinInfo, Promo, };
 use fugaso_math::protocol_mega_thunder::{MegaThunderLinkInfo, GrandLightningIn, GrandLightningOut, CommandEnum, ActionNameEnum, Settings, Winlines, COIN, MULTI, };
 const GAME_SOURCE_NAME: &str = "grand_lightning";
 const GAME_FUGASO_FOLDER: &str = "mega_thunder_link";
@@ -102,7 +102,7 @@ fn convert(name: &str) {
 							let curr_lines = context.spins.lines as usize;
 							let curr_bet = context.spins.bet_per_line as i32;
 							let curr_denom = 10;
-							let curr_reels = context.spins.selected_mode.map(|v| {v as usize}).unwrap_or(0);
+							let curr_reels = 5;
 							let category = 0;
 							let round_id = 0;
 							let round_type = RoundDetail::SIMPLE;
@@ -151,18 +151,12 @@ fn convert(name: &str) {
 									gains, 
 									restore: Some(ReSpinInfo { 
 										total: Default::default(), 
-										multipliers: Default::default(), 
+										mults: Default::default(), 
 										respins: Default::default(), 
 										overlay: Default::default(), 
 										accum: Default::default() 
 									}), 
-									extra_data: Some(ReSpinInfo { 
-										total: Default::default(), 
-										multipliers: Default::default(), 
-										respins: Default::default(), 
-										overlay: Default::default(), 
-										accum: Default::default() 
-									})
+									extra_data: None
 								}, 
 								curr_lines, 
 								curr_bet, 
@@ -177,14 +171,7 @@ fn convert(name: &str) {
 									amount: Default::default(), 
 									multi: Default::default() 
 								}, 
-								free: Some(FreeGame { 
-									total_win: Default::default(), 
-									symbol: Default::default(), 
-									category: Default::default(), 
-									initial: Default::default(), 
-									left: Default::default(), 
-									done: Default::default() 
-								}) 
+								free: None
 							}
 						};
 						//end pars respin transactions
@@ -222,7 +209,7 @@ fn convert(name: &str) {
 							let curr_lines = context.spins.lines as usize;
 							let curr_bet = context.spins.bet_per_line as i32;
 							let curr_denom = 10;
-							let curr_reels = context.spins.selected_mode.map(|v| {v as usize}).unwrap_or(0);
+							let curr_reels = 5;
 							let category = 0;
 							let round_id = 0;
 							let round_type = RoundDetail::SIMPLE;
@@ -301,18 +288,12 @@ fn convert(name: &str) {
 									gains, 
 									restore: Some(ReSpinInfo { 
 										total: Default::default(), 
-										multipliers: Default::default(), 
+										mults: Default::default(), 
 										respins: Default::default(), 
 										overlay: Default::default(), 
 										accum: Default::default() 
 									}), 
-									extra_data: Some(ReSpinInfo { 
-										total: Default::default(), 
-										multipliers: Default::default(), 
-										respins: Default::default(), 
-										overlay: Default::default(), 
-										accum: Default::default() 
-									})
+									extra_data: None
 								}, 
 								curr_lines, 
 								curr_bet, 
@@ -327,14 +308,7 @@ fn convert(name: &str) {
 									amount: Default::default(), 
 									multi: Default::default() 
 								}, 
-								free: Some(FreeGame { 
-									total_win: Default::default(), 
-									symbol: Default::default(), 
-									category: Default::default(), 
-									initial: Default::default(), 
-									left: Default::default(), 
-									done: Default::default() 
-								}) 
+								free: None
 							}
 						};
 						//end pars spin transactions
