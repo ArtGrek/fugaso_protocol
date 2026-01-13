@@ -7,6 +7,14 @@ use crate::protocol::DatabaseStore;
 
 #[derive(Debug, Serialize, Deserialize, Default, Clone)]
 #[serde(rename_all = "camelCase")]
+pub struct LiftItem {
+    pub p: (usize, usize),
+    pub m: i32,
+    pub v: i32,
+}
+
+#[derive(Debug, Serialize, Deserialize, Default, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct MegaThunderLinkInfo {
     #[serde(default)]
     pub total: i64,
@@ -21,6 +29,8 @@ pub struct MegaThunderLinkInfo {
     pub mults: Vec<Vec<i32>>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub lifts: Vec<Vec<i32>>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub lifts_new: Vec<LiftItem>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub grand: Vec<i32>,
 }
@@ -464,8 +474,8 @@ pub static JACKPOTS_VALUE: &[i64] = &[10, 20, 100];
 pub static JACKPOTS_STR: &[&str] = &["mini", "minor", "major"];
 pub const COIN: i64 = 10;
 pub const COIN_STR: &str = "10";
-pub const BOOST: i64 = 11;
-pub const BOOST_STR: &str = "11";
+pub const JACKPOT: i64 = 11;
+pub const JACKPOT_STR: &str = "11";
 pub const MULTI: i64 = 12;
 pub const MULTI_STR: &str = "12";
 pub const WILD: i64 = 9;
