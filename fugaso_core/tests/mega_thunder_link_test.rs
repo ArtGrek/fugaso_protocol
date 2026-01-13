@@ -110,7 +110,6 @@ fn convert(name: &str) {
 							//result
 							let bonus = context.bonus.map(|bonus| {bonus}).expect("play respin bonus not impement");
 							let total = context.spins.total_win.unwrap_or(0) +  bonus.total_win;
-							let spetial_total = bonus.column_results.as_deref().unwrap_or(&[]).iter().map(|c| c.win).sum();
 							let stops = vec![0, 0, 0, 0, 0];
 							let holds = vec![0];
 							let grid0 = vec![];
@@ -149,7 +148,7 @@ fn convert(name: &str) {
 									grid0, 
 									grid, 
 									special: Some(MegaThunderLinkInfo { 
-										total: spetial_total, 
+										total, 
 										respins, 
 										accum, 
 										stop: Default::default(), 
@@ -239,12 +238,11 @@ fn convert(name: &str) {
 								(grid, overlay)
 							};
                             let gains = convert_win_lines(&context.spins.winlines.unwrap_or(vec![]));
-							let (total, spetial_total, next_act, respins, accum, mults, lifts, lifts_new, grand) = if context.actions == vec![ActionNameEnum::BonusInit] {
+							let (total, next_act, respins, accum, mults, lifts, lifts_new, grand) = if context.actions == vec![ActionNameEnum::BonusInit] {
                                 let next_grand_lightning_out = serde_json::from_value::<GrandLightningOut>(iter.peek().expect("next packet not found").response.clone()).expect("next packet not found"); 
 								let next_context = next_grand_lightning_out.context.map(|context| {context}).expect("next play context not impement");
 								let next_bonus = next_context.bonus.map(|bonus| {bonus}).expect("next play respin bonus not impement");
 								let total = context.spins.total_win.unwrap_or(0) + next_bonus.total_win;
-								let spetial_total = next_bonus.column_results.as_deref().unwrap_or(&[]).iter().map(|c| c.win).sum();
 								let respins = next_bonus.rounds_left as i32;
 								let accum = next_bonus.total_win;
 								let next_act = ActionKind::RESPIN;
@@ -271,10 +269,9 @@ fn convert(name: &str) {
 										};
 								});
 								let grand = next_bonus.grand.iter().map(|&v| v as i32).collect::<Vec<i32>>();
-								(total, spetial_total, next_act, respins, accum, mults, lifts, lifts_new, grand)
+								(total, next_act, respins, accum, mults, lifts, lifts_new, grand)
 							} else {
 								let total = context.spins.total_win.unwrap_or(0);
-								let spetial_total = context.spins.boost_pay.unwrap_or(0);
 								let respins = 0;
 								let accum = 0;
 								let next_act = if context.spins.total_win.unwrap_or(0) > 0 {ActionKind::COLLECT} else {ActionKind::BET};
@@ -301,7 +298,7 @@ fn convert(name: &str) {
 									})
 								});
 								let grand = vec![];
-								(total, spetial_total, next_act, respins, accum, mults, lifts, lifts_new, grand)
+								(total, next_act, respins, accum, mults, lifts, lifts_new, grand)
 							};
 							SpinData { 
 								id, 
@@ -315,7 +312,7 @@ fn convert(name: &str) {
 									grid0, 
 									grid, 
 									special: Some(MegaThunderLinkInfo { 
-										total: spetial_total, 
+										total, 
 										respins, 
 										accum, 
 										stop: Default::default(), 
