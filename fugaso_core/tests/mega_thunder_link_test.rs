@@ -11,7 +11,10 @@ use integration::FuGaSoTuple;
 use fugaso_core::protocol::PlayerRequest;
 use fugaso_data::{fugaso_action::ActionKind, fugaso_round::RoundDetail};
 use fugaso_math::protocol::{GameData, SpinData, id, GameResult, Gain, ReSpinInfo, Promo, };
-use fugaso_math::protocol_mega_thunder::{MegaThunderLinkInfo, LiftItem, GrandLightningIn, GrandLightningOut, CommandEnum, ActionNameEnum, Settings, Winlines, COIN, JACKPOT, MULTI, };
+use fugaso_math::protocol_mega_thunder::{
+	MegaThunderLinkInfo, LiftItem, GrandLightningIn, GrandLightningOut, CommandEnum, ActionNameEnum, Settings, Winlines, 
+	COIN, JACKPOT, MULTI, MINI_VALUE, MINI_CHAR, MINOR_VALUE, MINOR_CHAR, MAJOR_VALUE, MAJOR_CHAR, 
+};
 const GAME_SOURCE_NAME: &str = "grand_lightning";
 const GAME_FUGASO_FOLDER: &str = "mega_thunder_link";
 pub const BOARD_HEIGHT: usize = 3;
@@ -113,7 +116,7 @@ fn convert(name: &str) {
 							let stops = vec![0, 0, 0, 0, 0];
 							let holds = vec![0];
 							let grid0 = vec![];
-							let grid = convert_board(&bonus.board.iter().map(|row| row.iter().map(|&v| v as i32).collect()).collect());
+							let grid = convert_board(&bonus.board, &bonus.bs_values);
                             let gains = vec![];
 							//special
 							let respins = bonus.rounds_left as i32;
@@ -229,11 +232,11 @@ fn convert(name: &str) {
 							let holds = vec![0];
 							let grid0 = vec![];
 							let (grid, overlay) = if let Some(board) = context.spins.original_board {
-								let grid = convert_board(&board.iter().map(|row| row.iter().map(|&v| v as i32).collect()).collect());
-								let overlay = Some(convert_board(&context.spins.board.iter().map(|row| row.iter().map(|&v| v as i32).collect()).collect()));
+								let grid = convert_board(&board, &context.spins.bs_values);
+								let overlay = Some(convert_board(&context.spins.board, &context.spins.bs_values));
 								(grid, overlay)
 							} else {
-								let grid = convert_board(&context.spins.board.iter().map(|row| row.iter().map(|&v| v as i32).collect()).collect());
+								let grid = convert_board(&context.spins.board, &context.spins.bs_values);
 								let overlay = None;
 								(grid, overlay)
 							};
@@ -372,8 +375,21 @@ fn convert(name: &str) {
     serde_json::to_writer(File::create(format!("packets_result/{GAME_FUGASO_FOLDER}/{name}")).expect("error file open"), &results,).expect("error write file");
 }
 
-fn convert_board(board: &Vec<Vec<i32>>) -> Vec<Vec<char>> {
-    board.iter().map(|reel| {reel.iter().map(|v| {char::from_u32(*v as u32 + '@' as u32).expect("error symbol")}).collect::<Vec<_>>()}).collect::<Vec<_>>()
+fn convert_board(board: &Vec<Vec<i64>>, bs_values: &Vec<Vec<i64>>) -> Vec<Vec<char>> {
+    board.iter().enumerate().map(|(col_num, col)| {
+		col.iter().enumerate().map(|(row_num, row)| {
+			if *row == JACKPOT {
+				match bs_values[col_num][row_num] {
+					MINI_VALUE => {MINI_CHAR},
+					MINOR_VALUE => {MINOR_CHAR},
+					MAJOR_VALUE => {MAJOR_CHAR}
+					_ => {panic!("unknown jackpot")}
+				}
+			} else {
+				char::from_u32(*row as u32 + '@' as u32).expect("error symbol")
+			}
+		}).collect::<Vec<_>>()
+	}).collect::<Vec<_>>()
 }
 
 fn convert_win_lines(win_lines: &Vec<Winlines>) -> Vec<Gain> {

@@ -464,12 +464,15 @@ pub struct GrandLightningIn {
 pub const BOARD_HEIGHT: usize = 3;
 pub const BOARD_WIDTH: usize = 5;
 pub const LINES_COUNT: usize = 25;
-pub const MINI_VALUE: i64 = 10;
+pub const MINI_VALUE: i64 = 15;
 pub const MINI_STR: &str = "mini";
-pub const MINOR_VALUE: i64 = 20;
+pub const MINI_CHAR: char = 'M';
+pub const MINOR_VALUE: i64 = 30;
 pub const MINOR_STR: &str = "minor";
+pub const MINOR_CHAR: char = 'N';
 pub const MAJOR_VALUE: i64 = 100;
 pub const MAJOR_STR: &str = "major";
+pub const MAJOR_CHAR: char = 'O';
 pub static JACKPOT_VALUES: &[i64] = &[10, 20, 100];
 pub static JACKPOT_VALUES_STR: &[&str] = &["mini", "minor", "major"];
 pub const COIN: i64 = 10;
