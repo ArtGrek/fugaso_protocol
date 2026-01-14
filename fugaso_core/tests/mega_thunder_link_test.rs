@@ -54,7 +54,6 @@ fn test_structure() {
 }
 
 #[test]
-//#[ignore]
 #[allow(unused)]
 fn test_convert() {
     convert("00-no_win.json");
