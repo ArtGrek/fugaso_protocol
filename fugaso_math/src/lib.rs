@@ -1,6 +1,5 @@
 pub mod protocol;
 pub mod math;
-pub mod protocol_new_game_name;
 pub mod protocol_zeus;
 pub mod protocol_thor;
 pub mod protocol_hold_and_win;
