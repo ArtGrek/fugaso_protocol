@@ -274,7 +274,7 @@ fn convert(name: &str) {
 								let respins = 0;
 								let accum = 0;
 								let next_act = if context.spins.total_win.unwrap_or(0) > 0 {ActionKind::COLLECT} else {ActionKind::BET};
-								let (mults, mut lifts): (Vec<Vec<i32>>, Vec<Vec<i32>>) = context.spins.bs_values.iter().enumerate().map(|(col_num, col)| {
+								let (mut mults, mut lifts): (Vec<Vec<i32>>, Vec<Vec<i32>>) = context.spins.bs_values.iter().enumerate().map(|(col_num, col)| {
 									col.iter().enumerate().map(|(row_num, &v)| {
 										if context.spins.board[col_num][row_num] == COIN || context.spins.board[col_num][row_num] == JACKPOT {(v as i32, 1)} else {(0, 0)}
 									}).collect()
@@ -297,6 +297,8 @@ fn convert(name: &str) {
 									})
 								});
 								let grand = vec![];
+								if mults.iter().all(|col| {col.iter().all(|row| {*row == 0})}) {mults = vec![]};
+								if lifts.iter().all(|col| {col.iter().all(|row| {*row == 0})}) {lifts = vec![]};
 								(total, next_act, respins, accum, mults, lifts, lifts_new, grand)
 							};
 							SpinData { 
