@@ -59,6 +59,8 @@ fn test_convert() {
     convert("00-no_win.json");
     convert("01-win.json");
     convert("11-s-multi_2.json");
+    convert("20-fs-init_win_line.json");
+    convert("21-fs-init_win_line_col.json");
     convert("23-fs-multi_5.json");
     convert("24-fs-grand.json");
     convert("25-fs-grand.json");
@@ -71,6 +73,8 @@ fn convert(name: &str) {
     let bet_counters = [1, 70, 300];
 	let mut game_settings: Option<Settings> = None;
 	let mut grand_granted: bool = false;
+	let mut global_total: i64 = 0;
+	let mut global_accum: i64 = 0;
 	//end additional global variables
     let list = parse_packet(name);
     let mut iter = list.into_iter().peekable();
@@ -113,7 +117,6 @@ fn convert(name: &str) {
 							let round_multiplier = 1;
 							//result
 							let bonus = context.bonus.map(|bonus| {bonus}).expect("play respin bonus not impement");
-							let total = context.spins.total_win.unwrap_or(0) +  bonus.total_win;
 							let stops = vec![0, 0, 0, 0, 0];
 							let holds = vec![0];
 							let grid0 = vec![];
@@ -121,7 +124,6 @@ fn convert(name: &str) {
                             let mut gains = vec![];
 							//special
 							let respins = bonus.rounds_left as i32;
-							let accum = bonus.total_win;
 							let overlay = None;
 							let (mults, lifts): (Vec<Vec<i32>>, Vec<Vec<i32>>) = bonus.bs_values.iter().enumerate().map(|(col_num, col)| {
 								col.iter().enumerate().map(|(row_num, &v)| {
@@ -157,6 +159,8 @@ fn convert(name: &str) {
 											..Default::default()
 										}
 									);
+									global_total += coins_win_amount as i64;
+									global_accum += coins_win_amount as i64;
 								};
 								grand_granted = false;
 								ActionKind::COLLECT
@@ -174,9 +178,12 @@ fn convert(name: &str) {
 												..Default::default()
 											}
 										);
+										global_total += coins_win_amount as i64;
+										global_accum += coins_win_amount as i64;
 									}
 								});
 								if !grand_granted && grand.iter().all(|&m| {m > 0}) {
+									grand_granted = true;
 									let jp_amount = game_settings.clone().unwrap_or_default().jackpots.grand * curr_bet as i64 * curr_denom as i64;
 									gains.push(
 										Gain {
@@ -188,10 +195,13 @@ fn convert(name: &str) {
 											..Default::default()
 										}
 									);
-									grand_granted = true;
+									global_total += jp_amount as i64;
+									global_accum += jp_amount as i64;
 								}
 								ActionKind::RESPIN
 							};
+							let total = global_total;
+							let accum = global_accum;
 							SpinData { 
 								id, 
 								balance, 
@@ -294,13 +304,14 @@ fn convert(name: &str) {
 								(grid, overlay)
 							};
                             let mut gains = convert_win_lines(&context.spins.winlines.unwrap_or(vec![]));
-							let (total, next_act, respins, accum, mults, lifts, lifts_new, grand) = if context.actions == vec![ActionNameEnum::BonusInit] {
+								
+							global_total = gains.iter().map(|g| g.amount).sum::<i64>();
+							global_accum = 0;
+							let (next_act, respins, mults, lifts, lifts_new, grand) = if context.actions == vec![ActionNameEnum::BonusInit] {
                                 let next_grand_lightning_out = serde_json::from_value::<GrandLightningOut>(iter.peek().expect("next packet not found").response.clone()).expect("next packet not found"); 
 								let next_context = next_grand_lightning_out.context.map(|context| {context}).expect("next play context not impement");
 								let next_bonus = next_context.bonus.map(|bonus| {bonus}).expect("next play respin bonus not impement");
-								let total = context.spins.total_win.unwrap_or(0) + next_bonus.total_win;
 								let respins = next_bonus.rounds_left as i32;
-								let accum = next_bonus.total_win;
 								let next_act = ActionKind::RESPIN;
 								let (mut mults, mut lifts): (Vec<Vec<i32>>, Vec<Vec<i32>>) = context.spins.bs_values.iter().enumerate().map(|(col_num, col)| {
 									col.iter().enumerate().map(|(row_num, &v)| {
@@ -338,9 +349,12 @@ fn convert(name: &str) {
 												..Default::default()
 											}
 										);
+										global_total += coins_win_amount as i64;
+										global_accum += coins_win_amount as i64;
 									}
 								});
 								if grand.iter().all(|&m| {m > 0}) {
+									grand_granted = true;
 									let jp_amount = game_settings.clone().unwrap_or_default().jackpots.grand * curr_bet as i64 * curr_denom as i64;
 									gains.push(
 										Gain {
@@ -352,12 +366,12 @@ fn convert(name: &str) {
 											..Default::default()
 										}
 									);
+									global_total += jp_amount as i64;
+									global_accum += jp_amount as i64;
 								}
-								(total, next_act, respins, accum, mults, lifts, lifts_new, grand)
+								(next_act, respins, mults, lifts, lifts_new, grand)
 							} else {
-								let total = context.spins.total_win.unwrap_or(0);
 								let respins = 0;
-								let accum = 0;
 								let next_act = if context.spins.total_win.unwrap_or(0) > 0 {ActionKind::COLLECT} else {ActionKind::BET};
 								let (mut mults, mut lifts): (Vec<Vec<i32>>, Vec<Vec<i32>>) = context.spins.bs_values.iter().enumerate().map(|(col_num, col)| {
 									col.iter().enumerate().map(|(row_num, &v)| {
@@ -400,11 +414,14 @@ fn convert(name: &str) {
 											..Default::default()
 										}
 									);
+									global_total += coins_win_amount as i64;
 								};
 								if mults.iter().flatten().all(|&v| v == 0) {mults.clear()};
 								if lifts.iter().flatten().all(|&v| v == 0) {lifts.clear()};
-								(total, next_act, respins, accum, mults, lifts, lifts_new, grand)
+								(next_act, respins, mults, lifts, lifts_new, grand)
 							};
+							let total = global_total;
+							let accum = global_accum;
 							SpinData { 
 								id, 
 								balance, 
