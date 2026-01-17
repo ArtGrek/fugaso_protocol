@@ -141,8 +141,11 @@ fn convert(name: &str) {
 							let next_act = if context.actions == vec![ActionNameEnum::BonusSpinsStop] {
 								if mults.iter().flatten().any(|&v| v > 0) && lifts.iter().flatten().any(|&v| v > 0) {
 									let coins_count = mults.iter().flatten().filter(|&&v| v > 0).count();
-									let mults_sum: i32 = mults.iter().flatten().copied().sum();
-									let coins_win_amount = lifts.iter().flatten().copied().filter(|&l| l > 0).map(|l| mults_sum * l * curr_bet * curr_denom).sum::<i32>();
+									let coins_win_amount = mults.iter().zip(&lifts).map(|(mult, lift)| {
+										mult.iter().zip(lift).map(|(&m, l)| {
+											m * l * curr_bet * curr_denom
+										}).sum::<i32>()
+									}).sum::<i32>();
 									gains.push(
 										Gain {
 											symbol: COIN_SYMBOL, 
@@ -156,10 +159,9 @@ fn convert(name: &str) {
 								};
 								ActionKind::COLLECT
 							} else {
-								mults.iter().enumerate().for_each(|(col_num, mult)| {
+								mults.iter().enumerate().zip(&lifts).for_each(|((col_num, mult), lift)| {
 									if mult.iter().all(|&m| {m > 0}) {
-										let mults_sum: i32 = mult.iter().copied().sum();
-										let coins_win_amount = lifts.iter().flatten().copied().filter(|&l| l > 0).map(|l| mults_sum * l * curr_bet * curr_denom).sum::<i32>();
+										let coins_win_amount = mult.iter().zip(lift).map(|(&m, l)| {m * l * curr_bet * curr_denom}).sum::<i32>();
 										gains.push(
 											Gain {
 												symbol: COIN_COLUMN, 
@@ -320,10 +322,9 @@ fn convert(name: &str) {
 										};
 								});
 								let grand = next_bonus.grand.iter().map(|&v| v as i32).collect::<Vec<i32>>();
-								mults.iter().enumerate().for_each(|(col_num, mult)| {
+								mults.iter().enumerate().zip(&lifts).for_each(|((col_num, mult), lift)| {
 									if mult.iter().all(|&m| {m > 0}) {
-										let mults_sum: i32 = mult.iter().copied().sum();
-										let coins_win_amount = lifts.iter().flatten().copied().filter(|&l| l > 0).map(|l| mults_sum * l * curr_bet * curr_denom).sum::<i32>();
+										let coins_win_amount = mult.iter().zip(lift).map(|(&m, l)| {m * l * curr_bet * curr_denom}).sum::<i32>();
 										gains.push(
 											Gain {
 												symbol: COIN_COLUMN, 
@@ -381,8 +382,11 @@ fn convert(name: &str) {
 								let grand = vec![];
 								if mults.iter().flatten().any(|&v| v > 0) && grid.iter().flatten().any(|&v| v == 'L') {
 									let coins_count = mults.iter().flatten().filter(|&&v| v > 0).count();
-									let mults_sum: i32 = mults.iter().flatten().copied().sum();
-									let coins_win_amount = lifts.iter().flatten().copied().filter(|&l| l > 0).map(|l| mults_sum * l * curr_bet * curr_denom).sum::<i32>();
+									let coins_win_amount = mults.iter().zip(&lifts).map(|(mult, lift)| {
+										mult.iter().zip(lift).map(|(&m, l)| {
+											m * l * curr_bet * curr_denom
+										}).sum::<i32>()
+									}).sum::<i32>();
 									gains.push(
 										Gain {
 											symbol: COIN_SYMBOL, 
