@@ -379,7 +379,7 @@ fn convert(name: &str) {
 									})
 								});
 								let grand = vec![];
-								if mults.iter().flatten().any(|&v| v > 0) && lifts.iter().flatten().any(|&v| v > 0) {
+								if mults.iter().flatten().any(|&v| v > 0) && grid.iter().flatten().any(|&v| v == 'L') {
 									let coins_count = mults.iter().flatten().filter(|&&v| v > 0).count();
 									let mults_sum: i32 = mults.iter().flatten().copied().sum();
 									let coins_win_amount = lifts.iter().flatten().copied().filter(|&l| l > 0).map(|l| mults_sum * l * curr_bet * curr_denom).sum::<i32>();
