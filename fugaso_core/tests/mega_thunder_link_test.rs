@@ -70,6 +70,7 @@ fn convert(name: &str) {
 	//start additional global variables
     let bet_counters = [1, 70, 300];
 	let mut game_settings: Option<Settings> = None;
+	let mut grand_granted: bool = false;
 	//end additional global variables
     let list = parse_packet(name);
     let mut iter = list.into_iter().peekable();
@@ -157,6 +158,7 @@ fn convert(name: &str) {
 										}
 									);
 								};
+								grand_granted = false;
 								ActionKind::COLLECT
 							} else {
 								mults.iter().enumerate().zip(&lifts).for_each(|((col_num, mult), lift)| {
@@ -174,7 +176,7 @@ fn convert(name: &str) {
 										);
 									}
 								});
-								if grand.iter().all(|&m| {m > 0}) {
+								if !grand_granted && grand.iter().all(|&m| {m > 0}) {
 									let jp_amount = game_settings.clone().unwrap_or_default().jackpots.grand * curr_bet as i64 * curr_denom as i64;
 									gains.push(
 										Gain {
@@ -186,6 +188,7 @@ fn convert(name: &str) {
 											..Default::default()
 										}
 									);
+									grand_granted = true;
 								}
 								ActionKind::RESPIN
 							};
